@@ -58,7 +58,7 @@ describe Mongoid::MultiParameterAttributes do
               "dob(2i)" => "2",
               "dob(3i)" => "31"
             })
-          }.to raise_exception(
+          }.to raise_error(
             Mongoid::MultiParameterAttributes::Errors::MultiparameterAssignmentErrors,
             "1 error(s) on assignment of multiparameter attributes"
           )

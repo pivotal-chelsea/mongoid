@@ -331,11 +331,11 @@ describe Mongoid::Criterion::Optional do
       context "when extras are provided" do
 
         let(:criteria) do
-          base.limit(10).extras({ skip: 10 })
+          base.extras({ skip: 10 })
         end
 
         it "adds the extras to the options" do
-          criteria.options.should eq({ skip: 10, limit: 10 })
+          criteria.options.should eq({ skip: 10 })
         end
       end
     end
@@ -380,7 +380,7 @@ describe Mongoid::Criterion::Optional do
           end
 
           it "adds the _id query to the selector" do
-            criteria.selector.should eq({ _id: id })
+            criteria.selector.should eq({ "_id" => id })
           end
 
           it "returns a copy" do
@@ -399,7 +399,7 @@ describe Mongoid::Criterion::Optional do
           end
 
           it "adds the string _id query to the selector" do
-            criteria.selector.should eq({ _id: id.to_s })
+            criteria.selector.should eq({ "_id" => id.to_s })
           end
 
           it "returns a copy" do
@@ -419,7 +419,7 @@ describe Mongoid::Criterion::Optional do
         end
 
         it "adds the _id query to the selector" do
-          criteria.selector.should eq({ _id: { "$in" => ids }})
+          criteria.selector.should eq({ "_id" => { "$in" => ids }})
         end
       end
 
@@ -430,7 +430,7 @@ describe Mongoid::Criterion::Optional do
         end
 
         it "adds the _id query to the selector" do
-          base.for_ids(ids).selector.should eq({ _id: ids.first.to_s })
+          base.for_ids(ids).selector.should eq({ "_id" => ids.first.to_s })
         end
       end
     end
@@ -459,7 +459,7 @@ describe Mongoid::Criterion::Optional do
           end
 
           it "adds the _id query to the selector convert like BSON::ObjectId" do
-            criteria.selector.should eq({ _id: BSON::ObjectId(id) })
+            criteria.selector.should eq({ "_id" => BSON::ObjectId.from_string(id) })
           end
 
           it "returns a copy" do
@@ -478,7 +478,7 @@ describe Mongoid::Criterion::Optional do
           end
 
           it "adds the _id query to the selector without cast" do
-            criteria.selector.should eq({ _id: id })
+            criteria.selector.should eq({ "_id" => id })
           end
 
           it "returns a copy" do
@@ -499,7 +499,7 @@ describe Mongoid::Criterion::Optional do
 
         it "adds the _id query to the selector with all ids like BSON::ObjectId" do
           criteria.selector.should eq(
-            { _id: { "$in" => ids.map { |i| BSON::ObjectId(i) }}}
+            { "_id" => { "$in" => ids.map { |i| BSON::ObjectId.from_string(i) }}}
           )
         end
       end
@@ -515,7 +515,7 @@ describe Mongoid::Criterion::Optional do
       end
 
       it "adds the limit to the options" do
-        criteria.options.should eq({ limit: 100 })
+        criteria.context.query.operation.limit.should eq(100)
       end
     end
 
@@ -526,7 +526,7 @@ describe Mongoid::Criterion::Optional do
       end
 
       it "defaults to 20" do
-        criteria.options.should eq({ limit: 20 })
+        criteria.context.query.operation.limit.should eq(20)
       end
     end
 
@@ -541,7 +541,7 @@ describe Mongoid::Criterion::Optional do
       end
 
       it "cast the limit value to an Integer" do
-        criteria.options.should eq({ limit: 100 })
+        criteria.context.query.operation.limit.should eq(100)
       end
     end
   end
@@ -566,7 +566,7 @@ describe Mongoid::Criterion::Optional do
       end
 
       it "delegates to skip" do
-        criteria.options[:skip].should eq(40)
+        criteria.context.query.operation.skip.should eq(40)
       end
     end
 
@@ -574,7 +574,6 @@ describe Mongoid::Criterion::Optional do
 
       it "returns nil" do
         base.offset.should be_nil
-        base.options[:skip].should be_nil
       end
     end
   end
@@ -730,7 +729,7 @@ describe Mongoid::Criterion::Optional do
       end
 
       it "adds the skip value to the options" do
-        criteria.options.should eq({ skip: 20 })
+        criteria.context.query.operation.skip.should eq(20)
       end
     end
 
@@ -741,7 +740,7 @@ describe Mongoid::Criterion::Optional do
       end
 
       it "defaults to zero" do
-        criteria.options.should eq({ skip: 0 })
+        criteria.context.query.operation.skip.should eq(0)
       end
     end
 
@@ -752,7 +751,7 @@ describe Mongoid::Criterion::Optional do
       end
 
       it "cast the skip value to an Integer" do
-        criteria.options.should eq({ skip: 100 })
+        criteria.context.query.operation.skip.should eq(100)
       end
     end
 

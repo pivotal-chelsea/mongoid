@@ -123,7 +123,7 @@ describe Mongoid::Criteria do
       end
 
       it 'finds the object with a matching BSON::ObjectId argument' do
-        Person.find(BSON::ObjectId(person.id)).should eq(person)
+        Person.find(person.id).should eq(person)
       end
     end
   end
@@ -456,41 +456,6 @@ describe Mongoid::Criteria do
 
     it "returns the results as a json string" do
       criteria.to_json.should include("\"_id\":\"#{person.id}\"")
-    end
-  end
-
-  context "when caching" do
-
-    before do
-      5.times do |n|
-        Person.create!(
-          title: "Sir",
-          age: (n * 10),
-          aliases: ["D", "Durran"]
-        )
-      end
-    end
-
-    let(:criteria) do
-      Person.where(title: "Sir").cache
-    end
-
-    it "iterates over the cursor only once" do
-      criteria.size.should eq(5)
-      Person.create!(title: "Sir")
-      criteria.size.should eq(5)
-    end
-  end
-
-  context "when chaining criteria after an initial execute" do
-
-    let(:criteria) do
-      described_class.new(Person)
-    end
-
-    it 'nots carry scope to cloned criteria' do
-      criteria.first
-      criteria.limit(1).context.options[:limit].should eq(1)
     end
   end
 end

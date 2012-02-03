@@ -3,6 +3,8 @@ class Band
   field :name, type: String
   field :active, type: Boolean, default: true
   field :origin, type: String
+  field :members, type: Array
+  field :likes, type: Integer
 
   embeds_many :records, cascade_callbacks: true
   embeds_one :label, cascade_callbacks: true
