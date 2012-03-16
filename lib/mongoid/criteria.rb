@@ -258,7 +258,7 @@ module Mongoid #:nodoc:
     #   criteria.as_conditions
     #
     # @return [ Hash ] The criteria as a scoped hash.
-    def as_conditions
+    def as_conditions(*args)
       scope_options = @options.dup
       sorting = scope_options.delete(:sort)
       scope_options[:order_by] = sorting if sorting
